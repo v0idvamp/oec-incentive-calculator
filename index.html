@@ -1,0 +1,121 @@
+<!DOCTYPE html>
+<html>
+<head>
+<title>OPPO Incentive Calculator</title>
+<style>
+body{
+font-family:Arial;
+background:#f5f5f5;
+text-align:center;
+padding:40px;
+}
+
+.box{
+background:white;
+padding:30px;
+border-radius:10px;
+width:320px;
+margin:auto;
+box-shadow:0 0 10px rgba(0,0,0,0.1);
+}
+
+input,button{
+padding:10px;
+margin:10px;
+width:90%;
+font-size:16px;
+}
+
+button{
+background:#2ecc71;
+color:white;
+border:none;
+cursor:pointer;
+}
+
+.result{
+font-size:20px;
+margin-top:20px;
+font-weight:bold;
+}
+</style>
+</head>
+
+<body>
+
+<div class="box">
+<h2>OEC Incentive Calculator</h2>
+
+<input type="number" id="salary" placeholder="Enter Salary">
+
+<input type="number" id="value" placeholder="Achievement (Lakhs)">
+
+<button onclick="calculate()">Calculate Incentive</button>
+
+<div class="result" id="result"></div>
+
+</div>
+
+<script>
+
+function getBand(salary){
+
+if(salary>=13250 && salary<=14500) return "O1";
+if(salary>=14501 && salary<=16500) return "O2";
+if(salary>=16501 && salary<=18500) return "O3";
+if(salary>=18501 && salary<=20500) return "O4";
+if(salary>=20501 && salary<=23500) return "O5";
+if(salary>=23501) return "O6";
+
+return null;
+}
+
+function getSlab(value){
+
+if(value>=6 && value<7) return 0;
+if(value>=7 && value<8) return 1;
+if(value>=8 && value<9) return 2;
+if(value>=9 && value<10) return 3;
+if(value>=10 && value<12) return 4;
+if(value>=12 && value<18) return 5;
+if(value>=18) return 6;
+
+return -1;
+}
+
+const incentiveTable = {
+
+O1:[2000,4000,6000,9000,9000,9000,9000],
+O2:[0,2000,4000,7000,7000,7000,7000],
+O3:[0,0,2000,5000,5000,5000,5000],
+O4:[0,0,0,3000,3000,3000,3500],
+O5:[0,0,0,0,1500,1500,3500],
+O6:[0,0,0,0,0,1500,3500]
+
+};
+
+function calculate(){
+
+let salary = parseFloat(document.getElementById("salary").value);
+let value = parseFloat(document.getElementById("value").value);
+
+let band = getBand(salary);
+let slab = getSlab(value);
+
+if(!band || slab==-1){
+
+document.getElementById("result").innerHTML="No incentive eligible";
+return;
+}
+
+let incentive = incentiveTable[band][slab];
+
+document.getElementById("result").innerHTML =
+"Band: "+band+"<br>Incentive: ₹"+incentive;
+
+}
+
+</script>
+
+</body>
+</html>

@@ -1,0 +1,222 @@
+<!DOCTYPE html>
+<html>
+<head>
+
+<title>OPPO OEC Incentive Calculator</title>
+
+<meta name="viewport" content="width=device-width, initial-scale=1">
+
+<link rel="manifest" href="manifest.json">
+
+<style>
+
+body{
+margin:0;
+font-family:Arial;
+background:#f4f6f8;
+}
+
+.header{
+background:#008c44;
+color:white;
+padding:18px;
+text-align:center;
+font-size:22px;
+font-weight:bold;
+}
+
+.container{
+padding:20px;
+}
+
+.card{
+background:white;
+border-radius:12px;
+padding:25px;
+max-width:400px;
+margin:auto;
+box-shadow:0 6px 20px rgba(0,0,0,0.1);
+}
+
+input{
+width:100%;
+padding:12px;
+margin-top:10px;
+margin-bottom:15px;
+border-radius:8px;
+border:1px solid #ccc;
+font-size:16px;
+}
+
+button{
+width:100%;
+padding:14px;
+background:#00a651;
+color:white;
+font-size:17px;
+border:none;
+border-radius:8px;
+cursor:pointer;
+margin-top:10px;
+}
+
+.result{
+margin-top:20px;
+padding:15px;
+background:#f1fff7;
+border-radius:10px;
+font-size:17px;
+}
+
+</style>
+
+</head>
+
+<body>
+
+<div class="header">
+OPPO OEC Incentive Calculator
+</div>
+
+<div class="container">
+
+<div class="card">
+
+<input type="number" id="salary" placeholder="Salary">
+
+<input type="number" id="value" placeholder="Achievement (Lakhs)">
+
+<button onclick="calculate()">Calculate Incentive</button>
+
+<button onclick="shareWhatsApp()">Share on WhatsApp</button>
+
+<div id="result" class="result"></div>
+
+</div>
+
+</div>
+
+<script>
+
+let shareText="";
+
+/* BAND */
+
+function getBand(salary){
+
+if(salary>=13250 && salary<=14500) return "O1";
+if(salary>=14501 && salary<=16500) return "O2";
+if(salary>=16501 && salary<=18500) return "O3";
+if(salary>=18501 && salary<=20500) return "O4";
+if(salary>=20501 && salary<=23500) return "O5";
+if(salary>=23501) return "O6";
+
+return null;
+}
+
+/* VARIABLE TABLE */
+
+const variable={
+
+O1:[2000,4000,6000,9000,9000,9000,9000],
+O2:[0,2000,4000,7000,7000,7000,7000],
+O3:[0,0,2000,5000,5000,5000,5000],
+O4:[0,0,0,3000,3000,3000,3500],
+O5:[0,0,0,0,1500,1500,3500],
+O6:[0,0,0,0,0,1500,3500]
+
+};
+
+const pls={
+
+O1:[1500,2500,4000,6000,9000,10000,12000],
+O2:[1000,2000,3500,5000,8000,9000,10000],
+O3:[0,2000,3000,4000,6000,8000,9000],
+O4:[0,1000,3000,4000,5000,6000,9000],
+O5:[0,1000,2500,3500,4500,6000,9000],
+O6:[0,0,0,3500,4500,6000,9000]
+
+};
+
+function variableSlab(v){
+
+if(v>=6 && v<7) return 0;
+if(v>=7 && v<8) return 1;
+if(v>=8 && v<9) return 2;
+if(v>=9 && v<10) return 3;
+if(v>=10 && v<12) return 4;
+if(v>=12 && v<18) return 5;
+if(v>=18) return 6;
+
+return -1;
+}
+
+function plsSlab(v){
+
+if(v>=6 && v<8) return 0;
+if(v>=8 && v<10) return 1;
+if(v>=10 && v<12) return 2;
+if(v>=12 && v<15) return 3;
+if(v>=15 && v<18) return 4;
+if(v>=18 && v<23) return 5;
+if(v>=23) return 6;
+
+return -1;
+}
+
+function calculate(){
+
+let salary=parseFloat(document.getElementById("salary").value);
+let value=parseFloat(document.getElementById("value").value);
+
+let band=getBand(salary);
+
+let vInc=0;
+let pInc=0;
+
+let vSlab=variableSlab(value);
+let pSlab=plsSlab(value);
+
+if(vSlab!=-1) vInc=variable[band][vSlab];
+if(pSlab!=-1) pInc=pls[band][pSlab];
+
+if(value>23){
+
+let extra=Math.floor((value-23)/2);
+pInc+=extra*600;
+
+}
+
+let total=vInc+pInc;
+
+shareText=
+
+"OPPO Incentive Calculation\n\n"+
+"Band: "+band+"\n"+
+"Variable Incentive: ₹"+vInc+"\n"+
+"PLS Incentive: ₹"+pInc+"\n"+
+"Total Incentive: ₹"+total;
+
+document.getElementById("result").innerHTML=
+shareText.replace(/\n/g,"<br>");
+
+}
+
+/* WHATSAPP SHARE */
+
+function shareWhatsApp(){
+
+if(shareText==""){
+alert("Please calculate first");
+return;
+}
+
+let url="https://wa.me/?text="+encodeURIComponent(shareText);
+window.open(url,"_blank");
+
+}
+
+</script>
+
+</body>
+</html>
